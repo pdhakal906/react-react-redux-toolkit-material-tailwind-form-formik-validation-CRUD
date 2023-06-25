@@ -69,9 +69,9 @@ const InfoForm = () => {
 
 
   const selectData = [
-    { label: 'Nepal', value: 'nepal' },
-    { label: 'India', value: 'india', },
-    { label: 'China', value: 'china', },
+    { label: 'Nepal', value: 'Nepal' },
+    { label: 'India', value: 'India', },
+    { label: 'China', value: 'China', },
     { label: 'USA', value: 'USA' },
   ];
 
