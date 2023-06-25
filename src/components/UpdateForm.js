@@ -13,13 +13,14 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Yup from 'yup';
 
 import { useNavigate, useParams } from "react-router";
+import { updateInfo } from "../features/infoSlice";
 
 
 
 const UpdateForm = () => {
 
   const { id } = useParams();
-  const { infos } = useSelector((store) => store.infos);
+  const { infos } = useSelector((store) => store.userData);
   const info = infos.find((inf) => inf.id === id);
 
 
@@ -51,6 +52,7 @@ const UpdateForm = () => {
     },
     onSubmit: (val) => {
       // console.log(val)
+      dispatch(updateInfo(val))
 
       nav(-1)
     },
@@ -70,11 +72,13 @@ const UpdateForm = () => {
 
 
   const selectData = [
-    { label: 'Nepal', value: 'nepal' },
-    { label: 'India', value: 'india', },
-    { label: 'China', value: 'china', },
+    { label: 'Nepal', value: 'Nepal' },
+    { label: 'India', value: 'India', },
+    { label: 'China', value: 'China', },
     { label: 'USA', value: 'USA' },
   ];
+
+
 
   return (
     <div className="max-w-xl shadow-2xl px-12 py-9 mx-auto ">
@@ -158,12 +162,19 @@ const UpdateForm = () => {
           <div className="space-y-2">
             <h1>Select Your Country</h1>
             <Select label="Select Country"
-              onChange={(e) => formik.setFieldValue('country', e)}>
-              {/* <Select label="Select Country" onChange={(e) => {
-                console.log(e)
-              }}> */}
+
+              onChange={(e) => formik.setFieldValue('country', e)}
+              value={formik.values.country}
+
+            >
+
+
               {selectData.map((c, i) => {
-                return <Option value={c.value} key={i}>{c.label}</Option>
+                return <Option
+                  value={c.value}
+                  key={i}>{c.label}
+
+                </Option>
               })}
 
 
@@ -204,7 +215,7 @@ const UpdateForm = () => {
             }}
               size="lg"
               name="image"
-              label="Select Image"
+              label="Change Image"
               type="file" />
             {formik.errors.image && formik.touched.image && <h1 className="text-red-600" >{formik.errors.image}</h1>}
           </div>

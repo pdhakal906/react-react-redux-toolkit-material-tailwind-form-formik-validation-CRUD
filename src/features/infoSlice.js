@@ -15,12 +15,17 @@ const infoSlice = createSlice({
     },
 
     updateInfo: (state, action) => {
-      state.infos = state.infos.map((info) => action.payload.id === info.id ? action.payload.info : info);
+      state.infos = state.infos.map((info) => action.payload.id === info.id ? action.payload : info);
       crudInfo(state.infos)
+    },
+
+    deleteInfo: (state, action) => {
+      state.infos = state.infos.filter((info) => info.id !== action.payload);
+      crudInfo(state.infos);
     }
 
 
   }
 })
-export const { addInfo } = infoSlice.actions
+export const { addInfo, updateInfo, deleteInfo } = infoSlice.actions
 export default infoSlice.reducer;
