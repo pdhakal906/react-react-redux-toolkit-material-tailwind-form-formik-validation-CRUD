@@ -24,6 +24,7 @@ const InfoForm = () => {
 
   const dispatch = useDispatch();
   const nav = useNavigate()
+  const reader = new FileReader();
 
   const valSchema = Yup.object().shape({
     username: Yup.string().max(20).min(6).required("username is required"),
@@ -31,7 +32,8 @@ const InfoForm = () => {
     hobby: Yup.array().min(1, "Hobby is required").required("hobby is required"),
     country: Yup.string().required("country is required"),
     gender: Yup.string().required("gender is required"),
-    msg: Yup.string().required('message is required')
+    msg: Yup.string().required('message is required'),
+    image: Yup.mixed().required("image is required").test('File_type', 'invalid', (val) => val && ['image/png', 'image/jpeg'].includes(val.type))
 
   })
 
@@ -45,13 +47,25 @@ const InfoForm = () => {
       gender: '',
       msg: '',
       preview: '',
-      id: nanoid()
+      id: nanoid(),
+      image: null
 
     },
     onSubmit: (val) => {
-      // console.log(val)
-      dispatch(addInfo(val));
-      nav(-1)
+      // // console.log(val)
+      // dispatch(addInfo(val));
+      // nav(-1)
+
+      // convert image into searlizable value to avoid warning
+
+      reader.onload = (e) => {
+        const base64Image = reader.result;
+        const formData = { ...val, image: base64Image };
+        dispatch(addInfo(formData));
+      };
+
+      reader.readAsDataURL(val.image);
+      nav(-1);
     },
 
     validationSchema: valSchema
@@ -182,8 +196,8 @@ const InfoForm = () => {
             }} size="lg" name="image" label="Select Image" type="file" /> */}
             <Input onChange={(e) => {
               const file = e.target.files[0];
-              // formik.setFieldValue('image', file);
-              const reader = new FileReader();
+              formik.setFieldValue('image', file);
+
               reader.readAsDataURL(file);
               // reader.addEventListener('load', (e) => {
               //   console.log(e);

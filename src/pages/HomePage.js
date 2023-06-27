@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router'
 import Dialogue from '../components/Dialogue';
 
 
+
 const HomePage = () => {
   const { infos } = useSelector((store) => store.userData)
 
   const nav = useNavigate();
+
 
 
 
