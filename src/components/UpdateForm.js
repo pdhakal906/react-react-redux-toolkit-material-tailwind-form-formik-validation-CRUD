@@ -19,6 +19,8 @@ import { updateInfo } from "../features/infoSlice";
 
 const UpdateForm = () => {
 
+
+
   const { id } = useParams();
   const { infos } = useSelector((store) => store.userData);
   const info = infos.find((inf) => inf.id === id);
@@ -27,13 +29,16 @@ const UpdateForm = () => {
   const dispatch = useDispatch();
   const nav = useNavigate()
 
+  const reader = new FileReader();
+
   const valSchema = Yup.object().shape({
     username: Yup.string().max(20).min(6).required("username is required"),
     email: Yup.string().email().required("email is required"),
     hobby: Yup.array().min(1, "Hobby is required").required("hobby is required"),
     country: Yup.string().required("country is required"),
     gender: Yup.string().required("gender is required"),
-    msg: Yup.string().required('message is required')
+    msg: Yup.string().required('message is required'),
+    image: Yup.mixed().required("image is required").test('File_type', 'invalid', (val) => val && ['image/png', 'image/jpeg'].includes(val.type))
 
   })
 
@@ -47,14 +52,23 @@ const UpdateForm = () => {
       gender: info.gender,
       msg: info.msg,
       preview: info.preview,
-      id: info.id
+      id: info.id,
+      image: info.image
 
     },
     onSubmit: (val) => {
-      // console.log(val)
-      dispatch(updateInfo(val))
+      // // console.log(val)
+      // dispatch(updateInfo(val));
+      // nav(-1)
 
-      nav(-1)
+      reader.onload = (e) => {
+        const base64Image = reader.result;
+        const formData = { ...val, image: base64Image };
+        dispatch(updateInfo(formData));
+      };
+
+      reader.readAsDataURL(val.image);
+      nav(-1);
     },
 
     validationSchema: valSchema
@@ -197,8 +211,8 @@ const UpdateForm = () => {
             }} size="lg" name="image" label="Select Image" type="file" /> */}
             <Input onChange={(e) => {
               const file = e.target.files[0];
-              // formik.setFieldValue('image', file);
-              const reader = new FileReader();
+              formik.setFieldValue('image', file);
+
               reader.readAsDataURL(file);
               // reader.addEventListener('load', (e) => {
               //   console.log(e);
